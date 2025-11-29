@@ -1,0 +1,27 @@
+# Workflow to display the runner's IP address
+# Can be triggered manually at any time from the Actions tab
+
+name: Show Runner IP
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  show-ip:
+    runs-on: self-hosted
+    permissions: {}
+
+    steps:
+      - name: Display Runner IP Address
+        run: |
+          echo "=== Runner IP Address Information ==="
+          echo "Public IP Address:"
+          PUBLIC_IP=$(curl -s --max-time 10 https://api.ipify.org 2>/dev/null) || \
+          PUBLIC_IP=$(curl -s --max-time 10 https://ifconfig.me 2>/dev/null) || \
+          PUBLIC_IP=$(curl -s --max-time 10 https://icanhazip.com 2>/dev/null) || \
+          PUBLIC_IP="Unable to retrieve public IP"
+          echo "$PUBLIC_IP"
+          echo ""
+          echo "Local Network Information:"
+          ip addr show 2>/dev/null || ifconfig 2>/dev/null || hostname -I 2>/dev/null || echo "Unable to retrieve local network information"
